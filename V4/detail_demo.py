@@ -3,7 +3,6 @@ import cv2, numpy as np
 from utils.kmeans import kmeans, iou_dist, euclidean_dist
 from PIL import Image, ImageDraw
 import asyncio, os
-import imutils
 import pandas as pd
 import torch
 from st_pages import add_page_title, hide_pages
@@ -13,6 +12,20 @@ num_classes = len(class_names)
 keep_prob = 0.7
 epsilon = 1e-07
 
+def rotate_image(image, angle):
+    # Lấy kích thước của ảnh
+    (h, w) = image.shape[:2]
+    
+    # Tính toán tâm của ảnh
+    center = (w // 2, h // 2)
+    
+    # Tạo ma trận xoay
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    
+    # Thực hiện phép biến đổi affine để xoay ảnh
+    rotated = cv2.warpAffine(image, M, (w, h))
+    
+    return rotated
 def cal_iou_nms(xywh_true, xywh_pred):
     """Calculate IOU of two tensors.
 
@@ -449,7 +462,7 @@ def RunDemo(yolo, cnn, uploaded_files, version = 2):
                     angle_rad = np.arctan2(y2 - y1, x2 - x1)
                     angle_deg = np.degrees(angle_rad)
 
-            rotated_image = imutils.rotate(image_copy, angle_deg)
+            rotated_image = rotate_image(image_copy, angle_deg)
 
             gray = cv2.cvtColor(rotated_image,cv2.COLOR_BGR2GRAY)
             edges = cv2.Canny(gray,50,200,apertureSize=3)
@@ -983,7 +996,7 @@ cropped_image = cv2.resize(cropped_image, (115, 100), interpolation = cv2.INTER_
                 angle_deg = np.degrees(angle_rad)
         st.info('Kết tiếp sẽ tìm những đường thằng và tính góc của đường thẳng đó so với ***Trục Ngang***', icon="👉")
         st.image(restore_img, caption='Restoration Image.', use_column_width=True)
-        rotated_image = imutils.rotate(image_copy, angle_deg)
+        rotated_image = rotate_image(image_copy, angle_deg)
         if len(result_string) == 0:
             st.info('Xoay bị sai rồi 😓',icon="🤧")
             st.image(rotated_image, caption='Rotated Image.', use_column_width=True)

@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import streamlit as st
 from PIL import Image, ImageDraw
 import asyncio, os
-import imutils
 import pandas as pd
 import torch
 from st_pages import add_page_title, hide_pages
@@ -135,6 +134,21 @@ def are_lines_perpendicular(angle_deg, threshold = 2):
     if np.abs(np.abs(angle_deg) - 90) < threshold:
         return True
     return False
+
+def rotate_image(image, angle):
+    # Lấy kích thước của ảnh
+    (h, w) = image.shape[:2]
+    
+    # Tính toán tâm của ảnh
+    center = (w // 2, h // 2)
+    
+    # Tạo ma trận xoay
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
+    
+    # Thực hiện phép biến đổi affine để xoay ảnh
+    rotated = cv2.warpAffine(image, M, (w, h))
+    
+    return rotated
 
 class Args():
     def __init__(self):
@@ -371,7 +385,7 @@ def DisplayDemo(yolo, cnn, uploaded_files):
                 angle_rad = np.arctan2(y2 - y1, x2 - x1)
                 angle_deg = np.degrees(angle_rad)
 
-        rotated_image = imutils.rotate(image_copy, angle_deg)
+        rotated_image = rotate_image(image_copy, angle_deg)
 
         gray = cv2.cvtColor(rotated_image,cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray,50,200,apertureSize=3)

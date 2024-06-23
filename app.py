@@ -11,7 +11,6 @@ from keras.callbacks import LearningRateScheduler, EarlyStopping
 from keras import backend as K
 from keras.activations import softplus, tanh
 from sklearn.model_selection import train_test_split
-import imutils
 import cv2
 from utils.tools import get_class_weight
 optimizer = Adam(learning_rate=5e-5)
