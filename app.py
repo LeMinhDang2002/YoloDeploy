@@ -41,11 +41,7 @@ import os
 ### Streamlit ###
 
 import streamlit as st
-import time
-import pandas as pd
 import torch
-import tkinter as tk
-from tkinter import filedialog
 
 from PIL import Image, ImageDraw
 import asyncio

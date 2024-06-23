@@ -2,7 +2,6 @@ tensorflow==2.14.0
 opencv-python==4.9.0.80
 matplotlib
 scikit-learn
-imutils
 bs4
 imgaug
 pandas
